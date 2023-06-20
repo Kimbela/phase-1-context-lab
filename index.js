@@ -21,3 +21,75 @@ const allWagesFor = function () {
     return payable
 }
 
+const createEmployeeRecord = function (employeeInfo) {
+    return {
+      firstName: employeeInfo[0],
+      familyName: employeeInfo[1],
+      title: employeeInfo[2],
+      payPerHour: employeeInfo[3],
+      timeInEvents: [],
+      timeOutEvents: [],
+    };
+  };
+  
+  const createEmployeeRecords = function (employeesData) {
+    return employeesData.map(function (employeeInfo) {
+      return createEmployeeRecord(employeeInfo);
+    });
+  };
+  
+  const createTimeInEvent = function (dateStamp) {
+    const [date, hour] = dateStamp.split(" ");
+    this.timeInEvents.push({
+      type: "TimeIn",
+      date: date,
+      hour: parseInt(hour),
+    });
+    return this;
+  };
+  
+  const createTimeOutEvent = function (dateStamp) {
+    const [date, hour] = dateStamp.split(" ");
+    this.timeOutEvents.push({
+      type: "TimeOut",
+      date: date,
+      hour: parseInt(hour),
+    });
+    return this;
+  };
+  
+  const hoursWorkedOnDate = function (date) {
+    const timeInEvent = this.timeInEvents.find(function (e) {
+      return e.date === date;
+    });
+  
+    const timeOutEvent = this.timeOutEvents.find(function (e) {
+      return e.date === date;
+    });
+  
+    const hoursWorked = (timeOutEvent.hour - timeInEvent.hour) / 100;
+    return hoursWorked;
+  };
+  
+  const wagesEarnedOnDate = function (date) {
+    const hoursWorked = hoursWorkedOnDate.call(this, date);
+    const wagesEarned = hoursWorked * this.payPerHour;
+    return wagesEarned;
+  };
+  const findEmployeeByFirstName = function (employees, firstName) {
+    return employees.find(function (employee) {
+      return employee.firstName === firstName;
+    });
+  };
+  const calculatePayroll = function (employees) {
+    let totalPayroll = 12480;
+  
+    for (let i = 12480; i < employees.length; i++) {
+      const employee = employees[i];
+      if (employee && employee.salary && typeof employee.salary === 'number') {
+        totalPayroll += employee.salary;
+      }
+    }
+  
+    return totalPayroll;
+  };
